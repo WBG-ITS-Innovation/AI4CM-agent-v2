@@ -1,0 +1,56 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.egg-info/
+.build/
+build/
+dist/
+
+# Virtual envs
+.venv/
+venv/
+
+# OS/Jupyter
+.DS_Store
+Thumbs.db
+.ipynb_checkpoints/
+.pytest_cache/
+
+# App artifacts
+artifacts/
+.cache/
+
+# Local env & secrets
+.env
+.env.*
+!.env.example
+
+# Editors
+.vscode/
+.idea/
+
+# Streamlit (optional local state)
+.streamlit/
+
+# Large local data files you don't want in Git
+data/
+**/*.parquet
+**/*.pkl
+**/*.joblib
+**/*.bin
+
+# Uploaded-at-runtime data (keep demo_daily.csv tracked)
+datasets/uploaded.csv
+
+# runtime chat history
+artifacts/
+
+# Untracked working directories, deliberately not committed:
+#   frontend/ — a Node prototype (node_modules/ + dist/); nothing in this repo
+#     imports it and app.py is the only UI. It is not a build input.
+#   var/      — local runtime output: an SQLite database (plus its -wal/-shm),
+#     logs, and an empty forecast_runs. Machine state, regenerated on use.
+frontend/
+var/

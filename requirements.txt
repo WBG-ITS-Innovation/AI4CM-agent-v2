@@ -1,0 +1,49 @@
+# requirements.txt — every third-party package reachable from app.py, pinned.
+#
+# Why pinned, and why this file was wrong before: the test suite stubs
+# streamlit, plotly, agent.tools and agent.llm (see tests/test_app_rendering.py),
+# so "tests green" and "the app starts" were independent facts. The suite passed
+# in an environment where streamlit, plotly, statsmodels and scikit-learn were
+# not installed at all, and `certifi` — a *module-level* import in agent/llm.py,
+# which app.py imports at module level — was never declared here. It happened to
+# be present only as a transitive dependency of openai.
+#
+# The list below is not hand-maintained. tests/test_dependencies.py walks the
+# import graph from app.py with the AST, resolves every top-level third-party
+# module, imports each one for real, and asserts that each is pinned here. A new
+# import that is not added to this file fails the suite.
+#
+# Versions are the ones a clean venv build was verified against; see
+# docs/sessions/2026-08-12-agent-deps-framing-targets.md for the transcript.
+
+# ── UI ──
+streamlit==1.61.1
+plotly==6.9.0
+
+# ── data ──
+pandas==3.0.5
+numpy==2.5.1
+
+# ── demo-mode modelling (agent/tools.py) ──
+# app.py no longer imports agent.tools at module level: the import happens
+# inside the demo-mode branch, so a lab-mode start does not load ~150 MB of
+# modelling stack for code it never calls. They stay pinned because demo mode
+# genuinely needs them, and because test_dependencies.py walks nested imports —
+# a lazy import is still a declared one.
+statsmodels==0.14.6
+scikit-learn==1.9.0
+
+# ── narration backend + config ──
+# certifi: imported at module scope by agent/llm.py to repair SSL_CERT_FILE
+# before any Azure OpenAI call. openai: imported lazily inside _client_and_model,
+# but the app cannot narrate without it, so it is declared, not optional.
+openai==2.53.0
+certifi==2026.7.22
+python-dotenv==1.2.2
+
+# ── Deliberately NOT here ──
+# pydantic, rich, joblib: were listed but are imported nowhere in this repo.
+# requests: imported only by agent/runtime/alerts.py, inside a try/except with a
+#   file-log fallback, and agent/runtime is not reachable from app.py. Install it
+#   yourself if you want the Slack alert channel.
+# pytest: see requirements-dev.txt.

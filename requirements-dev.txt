@@ -1,0 +1,9 @@
+# requirements-dev.txt — the runtime set plus what it takes to run the suite.
+#
+# The suite is deliberately runnable against the full runtime set (not stubs
+# alone): tests/test_dependencies.py imports streamlit, plotly, statsmodels and
+# scikit-learn for real, so `pip install -r requirements-dev.txt && pytest` is
+# the check that the app can actually start.
+-r requirements.txt
+
+pytest==9.1.1
